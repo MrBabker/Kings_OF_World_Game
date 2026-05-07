@@ -1,0 +1,16 @@
+# Build results
+bin/
+obj/
+
+# User secrets
+*.user
+*.suo
+
+# Visual Studio
+.vs/
+
+# appsettings sensitive (اختياري)
+appsettings.Development.json
+
+# Logs
+*.log
