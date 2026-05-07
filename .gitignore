@@ -5,6 +5,7 @@ obj/
 # User secrets
 *.user
 *.suo
+*.env
 
 # Visual Studio
 .vs/
