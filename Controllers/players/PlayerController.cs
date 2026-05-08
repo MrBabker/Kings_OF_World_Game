@@ -3,6 +3,7 @@ using king.data;
 using king.Models.players;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using System.Numerics;
 using System.Text;
 
@@ -77,7 +78,11 @@ namespace king.Controllers.players
             _dbContext.Players.Add(player);
             await _dbContext.SaveChangesAsync();
 
+          
+
             return Ok("User created, verify email");
+
+         
         }
 
 
@@ -104,7 +109,13 @@ namespace king.Controllers.players
             if (!response.IsSuccessStatusCode)
                 return Unauthorized(result);
 
-            return Ok(result);
+            var json = JObject.Parse(result);
+
+            return Ok(new
+            {
+                message = "Login successful",
+                token = json["idToken"]?.ToString()
+            });
         }
 
 
