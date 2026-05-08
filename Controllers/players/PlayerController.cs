@@ -38,6 +38,22 @@ namespace king.Controllers.players
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDTO req)
         {
+            try
+            {
+                var existingUser = await FirebaseAuth.DefaultInstance
+                 .GetUserByEmailAsync(req.Email);
+
+                if (existingUser != null)
+                {
+                    return BadRequest("Email already exists");
+
+                }
+            }
+            catch
+            {
+
+            }
+          
             // 1. إنشاء مستخدم في Firebase
             var user = await FirebaseAuth.DefaultInstance.CreateUserAsync(new UserRecordArgs
             {
