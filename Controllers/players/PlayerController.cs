@@ -62,8 +62,8 @@ namespace king.Controllers.players
             });
 
             // 2. إرسال تحقق الإيميل
-            var link = await FirebaseAuth.DefaultInstance
-                .GenerateEmailVerificationLinkAsync(req.Email);
+           // var link = await FirebaseAuth.DefaultInstance
+               // .GenerateEmailVerificationLinkAsync(req.Email);
 
             // (هنا ترسل الإيميل بأي خدمة SMTP لاحقاً)
 
