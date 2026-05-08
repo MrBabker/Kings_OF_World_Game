@@ -2,9 +2,9 @@
 using king.data;
 using king.Models.players;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Numerics;
+using System.Text;
 
 namespace king.Controllers.players
 {
@@ -34,7 +34,7 @@ namespace king.Controllers.players
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest req)
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDTO req)
         {
             // 1. إنشاء مستخدم في Firebase
             var user = await FirebaseAuth.DefaultInstance.CreateUserAsync(new UserRecordArgs
@@ -60,6 +60,33 @@ namespace king.Controllers.players
             await _dbContext.SaveChangesAsync();
 
             return Ok("User created, verify email");
+        }
+
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDTO req)
+        {
+            using var client = new HttpClient();
+
+            var apiKey = "AIzaSyDt8quwauLSxW6vhXOsQyGWtF66lW8Aho8";
+
+            var content = new StringContent($@"
+    {{
+        ""email"": ""{req.Email}"",
+        ""password"": ""{req.Password}"",
+        ""returnSecureToken"": true
+    }}", Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync(
+                $"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={apiKey}",
+                content);
+
+            var result = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+                return Unauthorized(result);
+
+            return Ok(result);
         }
 
 
