@@ -1,7 +1,10 @@
-﻿using king.data;
+﻿using FirebaseAdmin.Auth;
+using king.data;
 using king.Models.players;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using System.Numerics;
 
 namespace king.Controllers.players
 {
@@ -30,6 +33,35 @@ namespace king.Controllers.players
             return Ok(players);
         }
 
-      
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest req)
+        {
+            // 1. إنشاء مستخدم في Firebase
+            var user = await FirebaseAuth.DefaultInstance.CreateUserAsync(new UserRecordArgs
+            {
+                Email = req.Email,
+                Password = req.Password
+            });
+
+            // 2. إرسال تحقق الإيميل
+            var link = await FirebaseAuth.DefaultInstance
+                .GenerateEmailVerificationLinkAsync(req.Email);
+
+            // (هنا ترسل الإيميل بأي خدمة SMTP لاحقاً)
+
+            // 3. تخزين في PostgreSQL
+            var player = new PlayerModel
+            {
+                FirebaseId = user.Uid,
+                Email = req.Email
+            };
+
+            _dbContext.Players.Add(player);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok("User created, verify email");
+        }
+
+
     }
 }
