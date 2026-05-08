@@ -15,11 +15,13 @@ namespace king.Controllers.players
         public readonly ILogger<PlayersController> _logger;
         private readonly IPlayerService _playerService;
         private readonly AppDbContext _dbContext;
-        public PlayersController(ILogger<PlayersController> logger, IPlayerService playerService, AppDbContext dbContext)
+        private readonly IConfiguration _configuration;
+        public PlayersController(ILogger<PlayersController> logger, IPlayerService playerService, AppDbContext dbContext, IConfiguration configuration)
         {
             _logger = logger;
             _playerService = playerService;
             _dbContext = dbContext;
+            _configuration = configuration;
         }
 
         [HttpGet("all/{page}/{pageSize}")]
@@ -68,7 +70,7 @@ namespace king.Controllers.players
         {
             using var client = new HttpClient();
 
-            var apiKey = "AIzaSyDt8quwauLSxW6vhXOsQyGWtF66lW8Aho8";
+            var apiKey = _configuration["Firebase:WebApiKey"];
 
             var content = new StringContent($@"
     {{
