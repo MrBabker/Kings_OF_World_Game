@@ -30,15 +30,6 @@ namespace king.Controllers.players
             return Ok(players);
         }
 
-        [HttpPost("google-auth")]
-        public async Task<IActionResult> GoogleAuth([FromBody] GoogleLoginRequest request)
-        {
-            var token = await _playerService.GoogleAuth(request);
-            if (string.IsNullOrEmpty(token))
-            {
-                return Unauthorized("Invalid Google login.");
-            }
-            return Ok(new { Token = token });
-        }
+      
     }
 }

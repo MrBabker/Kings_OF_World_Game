@@ -1,3 +1,5 @@
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using king.Controllers.players;
 using king.data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,6 +16,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+var firebaseJson = builder.Configuration["firebas:config"];
+
+firebaseJson = firebaseJson.Replace("\\n", "\n");
+
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromJson(firebaseJson)
+});
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
