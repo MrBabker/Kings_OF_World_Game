@@ -10,5 +10,7 @@ namespace king.Controllers.players
 
         public Task<PlayerSelectsDTO?> GetCurrentPlayer(string firebaseUid);
 
+        public Task<UpdatePlayerNameDTO> UpdatePlayerName(string firebaseUid, UpdatePlayerNameDTO updatePlayerNameDTO);
+
     }
 }

@@ -53,5 +53,24 @@ namespace king.Controllers.players
            
             return player;
         }
+
+        public async Task<UpdatePlayerNameDTO> UpdatePlayerName(string firebaseUid, UpdatePlayerNameDTO updatePlayerNameDTO)
+        {
+            var player = await _appDbContext.Players
+                .Where(p => p.FirebaseId == firebaseUid)
+                .FirstOrDefaultAsync();
+
+            if (player == null)
+            {
+                return null;
+            }
+
+            player.Name = updatePlayerNameDTO.Name;
+            player.Username = updatePlayerNameDTO.Name;
+
+            await _appDbContext.SaveChangesAsync();
+
+            return updatePlayerNameDTO;
+        }
     }
 }

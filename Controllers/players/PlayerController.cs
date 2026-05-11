@@ -54,7 +54,7 @@ namespace king.Controllers.players
             {
 
             }
-          
+
             // 1. إنشاء مستخدم في Firebase
             var user = await FirebaseAuth.DefaultInstance.CreateUserAsync(new UserRecordArgs
             {
@@ -63,8 +63,8 @@ namespace king.Controllers.players
             });
 
             // 2. إرسال تحقق الإيميل
-           // var link = await FirebaseAuth.DefaultInstance
-               // .GenerateEmailVerificationLinkAsync(req.Email);
+            // var link = await FirebaseAuth.DefaultInstance
+            // .GenerateEmailVerificationLinkAsync(req.Email);
 
             // (هنا ترسل الإيميل بأي خدمة SMTP لاحقاً)
 
@@ -78,11 +78,11 @@ namespace king.Controllers.players
             _dbContext.Players.Add(player);
             await _dbContext.SaveChangesAsync();
 
-          
+
 
             return Ok("User created, verify email");
 
-         
+
         }
 
 
@@ -137,6 +137,23 @@ namespace king.Controllers.players
             }
 
             return Ok(player);
+        }
+
+        [Authorize]
+        [HttpPut("update-name")]
+        public async Task<IActionResult> UpdatePlayerName([FromBody] UpdatePlayerNameDTO updatePlayerNameDTO)
+        {
+            string firebaseUid = User.FindFirst("user_id")?.Value;
+            if (string.IsNullOrEmpty(firebaseUid))
+            {
+                return Unauthorized();
+            }
+            var updatedPlayer = await _playerService.UpdatePlayerName(firebaseUid, updatePlayerNameDTO);
+            if (updatedPlayer == null)
+            {
+                return NotFound("Player not found.");
+            }
+            return Ok(updatedPlayer);
         }
     }
 }
