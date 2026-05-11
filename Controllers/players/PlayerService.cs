@@ -36,7 +36,22 @@ namespace king.Controllers.players
         .Take(pageSize)
         .ToArrayAsync();
         }
-
-       
+        public async Task<PlayerSelectsDTO?> GetCurrentPlayer(string firebaseUid)
+        {
+            var player = await _appDbContext.Players
+                .Where(p => p.FirebaseId == firebaseUid)
+                .Select(p => new PlayerSelectsDTO
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    FirebaseId = firebaseUid,
+                    Username = p.Username,
+                    Email = p.Email,
+                    Level = p.Level
+                })
+                .FirstOrDefaultAsync();
+           
+            return player;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using king.Models.players;
+﻿using king.data;
+using king.Models.players;
 
 namespace king.Controllers.players
 {
@@ -6,5 +7,8 @@ namespace king.Controllers.players
     {
 
         public Task<PlayerSelectsDTO[]> GetAllPlayers(int page , int pageSize);
+
+        public Task<PlayerSelectsDTO?> GetCurrentPlayer(string firebaseUid);
+
     }
 }

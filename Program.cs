@@ -24,22 +24,18 @@ FirebaseApp.Create(new AppOptions()
 {
     Credential = GoogleCredential.FromJson(firebaseJson)
 });
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
+        options.Authority = "https://securetoken.google.com/"+ builder.Configuration["project:id"];
+        options.TokenValidationParameters = new()
         {
             ValidateIssuer = true,
+            ValidIssuer = "https://securetoken.google.com/" + builder.Configuration["project:id"],
             ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
-            )
+            ValidAudience = builder.Configuration["project:id"],
+            ValidateLifetime = true
         };
     });
 builder.Services.AddOpenApi();

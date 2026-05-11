@@ -118,6 +118,25 @@ namespace king.Controllers.players
             });
         }
 
+        [Authorize]
+        [HttpGet("current")]
+        public async Task<IActionResult> GetCurrentPlayer()
+        {
+            string firebaseUid = User.FindFirst("user_id")?.Value;
 
+            if (string.IsNullOrEmpty(firebaseUid))
+            {
+                return Unauthorized();
+            }
+
+            var player = await _playerService.GetCurrentPlayer(firebaseUid);
+
+            if (player == null)
+            {
+                return NotFound("Player not found.");
+            }
+
+            return Ok(player);
+        }
     }
 }
